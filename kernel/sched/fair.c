@@ -534,6 +534,9 @@ static inline u64 min_vruntime(u64 min_vruntime, u64 vruntime)
 static inline int entity_before(struct sched_entity *a,
 				struct sched_entity *b)
 {
+	// Check for soft runtime, if both are equal then proceed to vruntime
+	if((a->sruntime>0 || b->sruntime>0) && a->sruntime!=b->sruntime)
+		return (a->sruntime - b->sruntime) < 0;
 	return (s64)(a->vruntime - b->vruntime) < 0;
 }
 
@@ -860,7 +863,16 @@ static void update_curr(struct cfs_rq *cfs_rq)
 	curr->sum_exec_runtime += delta_exec;
 	schedstat_add(cfs_rq->exec_clock, delta_exec);
 
+	// vruntime is statistacal time I guess so let's update our softruntime here
+	// with delta_exec being the time so far run by the process
 	curr->vruntime += calc_delta_fair(delta_exec, curr);
+	u64 tsruntime;
+	tsruntime=curr->sruntime;
+	if(tsruntime > delta_exec){
+		curr->sruntime=tsruntime-delta_exec;
+	}else{
+		curr->sruntime=0;
+	}
 	update_min_vruntime(cfs_rq);
 
 	if (entity_is_task(curr)) {

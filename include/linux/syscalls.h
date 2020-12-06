@@ -1222,7 +1222,6 @@ asmlinkage long sys_mmap_pgoff(unsigned long addr, unsigned long len,
 			unsigned long fd, unsigned long pgoff);
 asmlinkage long sys_old_mmap(struct mmap_arg_struct __user *arg);
 
-
 /*
  * Not a real system call, but a placeholder for syscalls which are
  * not implemented -- see kernel/sys_ni.c
@@ -1347,4 +1346,6 @@ int __sys_getsockopt(int fd, int level, int optname, char __user *optval,
 		int __user *optlen);
 int __sys_setsockopt(int fd, int level, int optname, char __user *optval,
 		int optlen);
+
+asmlinkage long sys_rtnice(long pid, long tim);
 #endif

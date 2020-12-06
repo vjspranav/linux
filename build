@@ -1,0 +1,16 @@
+#!/bin/bash
+if [ "$1" = "yes" ]
+then
+echo "Building"
+make -j6
+fi
+if [ "$2" = "1" ]
+then
+echo "Installing"
+sudo make modules_install && sudo make install
+fi
+if [ "$2" = "1" ]
+then
+echo "Rebooting"
+reboot
+fi
